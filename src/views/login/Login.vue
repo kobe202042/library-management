@@ -46,8 +46,8 @@ export default {
             if(res.code ==='200'){
               this.$notify.success("登陆成功!")
               this.$router.push('/')
-              if(res.data){
-                Cookies.set('user',JSON.stringify(res.data))
+              if(res.data!=null){
+                Cookies.set('admin',JSON.stringify(res.data))
               }
             }else {
               this.$notify.error(res.msg)

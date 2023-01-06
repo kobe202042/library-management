@@ -6,17 +6,16 @@
     <img src="@/assets/logo.png" alt="" style="width: 40px; position:relative; top:10px;left: 20px">
     <span style="margin-left: 25px;font-size: 24px">图书管理系统</span>
     </div>
-    <div style="flex: 1">
-      <el-dropdown>
-    <span class="el-dropdown-link">
-      Dropdown List
-      <el-icon class="el-icon--right">
-        <arrow-down />
-      </el-icon>
+    <div style="flex: 1;text-align: right;padding-right: 20px">
+      <el-dropdown size="medium">
+    <span class="el-dropdown-link" style="cursor: pointer">
+   {{ admin.username }}
+      <i class="el-icon-arrow-down el-icon--right"></i>
     </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item>Action 1</el-dropdown-item>
+          <el-dropdown-menu slot="dropdown" style="margin-top: -5px">
+            <el-dropdown-item><div style="width: 50px;text-align: center;" @click="logout">退出</div></el-dropdown-item>
+          </el-dropdown-menu>
+      </el-dropdown>
     </div>
   </div>
 
@@ -64,8 +63,22 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
-  name: "Layout"
+  name: "Layout",
+  data(){
+    return{
+      admin:Cookies.get('admin')?JSON.parse(Cookies.get('admin')):{}
+    }
+  },
+  methods:{
+    logout(){
+      //清除浏览器用户数据
+      Cookies.remove('admin')
+      this.$router.push('/login')
+
+    }
+  }
 }
 </script>
 
