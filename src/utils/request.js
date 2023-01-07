@@ -3,7 +3,7 @@ import router from "@/router";
 import Cookies from 'js-cookie'
 
 const request = axios.create({
-    baseURL: 'http://localhost:9090',  // 注意！！ 这里是全局统一加上了 '/api' 前缀，也就是说所有接口都会加上'/api'前缀在，页面里面写接口的时候就不要加 '/api'了，否则会出现2个'/api'，类似 '/api/api/user'这样的报错，切记！！！
+    baseURL: 'http://localhost:9090/api',  // 注意！！ 这里是全局统一加上了 '/api' 前缀，也就是说所有接口都会加上'/api'前缀在，页面里面写接口的时候就不要加 '/api'了，否则会出现2个'/api'，类似 '/api/api/user'这样的报错，切记！！！
     timeout: 5000
 })
 
@@ -13,10 +13,10 @@ const request = axios.create({
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
-   const user= Cookies.get('admin')
-    if(!user) {
-        router.push('/login')
-    }// config.headers['token'] = user.token;  // 设置请求头
+   const adminJson= Cookies.get('admin')
+    if(adminJson) {
+        config.headers['token'] =JSON.parse(adminJson).token
+    }
     return config
 }, error => {
     return Promise.reject(error)
@@ -30,6 +30,9 @@ request.interceptors.response.use(
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
+        }
+        if(res.code==='401'){
+            router.push('/login')
         }
         return res;
     },

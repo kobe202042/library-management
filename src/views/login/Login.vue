@@ -21,7 +21,7 @@ margin:150px auto;padding: 50px">
 
 <script>
 import request from "@/utils/request"
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie"
 export default {
   name: "LOGIN",
   data(){
@@ -45,10 +45,10 @@ export default {
           request.post('/admin/login',this.admin).then(res=>{
             if(res.code ==='200'){
               this.$notify.success("登陆成功!")
-              this.$router.push('/')
-              if(res.data!=null){
+              if(res.data!==null){
                 Cookies.set('admin',JSON.stringify(res.data))
               }
+              this.$router.push('/')
             }else {
               this.$notify.error(res.msg)
             }

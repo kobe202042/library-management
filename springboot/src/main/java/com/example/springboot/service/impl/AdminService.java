@@ -2,6 +2,8 @@ package com.example.springboot.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.example.springboot.Exception.ServiceException;
 import com.example.springboot.controller.dto.LoginDTO;
 import com.example.springboot.controller.request.BaseRequest;
@@ -11,6 +13,7 @@ import com.example.springboot.mapper.AdminMapper;
 import com.example.springboot.mapper.UserMapper;
 import com.example.springboot.service.IAdminService;
 import com.example.springboot.service.IUserService;
+import com.example.springboot.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,10 @@ public class AdminService implements IAdminService {
     @Autowired
     AdminMapper adminMapper;
 
+    private static final String DEFAULT_PASS="123456";
+    private static final String PASS_SALT="coco";
+
+
     @Override
     public List<Admin> list() {
         return adminMapper.list();
@@ -43,8 +50,12 @@ public class AdminService implements IAdminService {
 
     @Override
     public void save(Admin obj) {
-        //当作卡号
 
+        //默认密码123456
+        if(StrUtil.isBlank(obj.getPassword())){
+            obj.setPassword(DEFAULT_PASS);
+        }
+       obj.setPassword(securePass(obj.getPassword())); //设置MD5加密
         adminMapper.save(obj);
     }
 
@@ -66,12 +77,21 @@ public class AdminService implements IAdminService {
 
     @Override
     public LoginDTO login(LoginRequest request) {
+        request.setPassword(securePass(request.getPassword()));
         Admin admin = adminMapper.getByUsernameAndPassword(request);
         if(admin==null){
           throw new ServiceException("用户名或密码错误！");
         }
         LoginDTO loginDTO = new LoginDTO();
         BeanUtils.copyProperties(admin, loginDTO);
+
+        //生产token
+        String token = TokenUtils.genToken(String.valueOf(admin.getId()),admin.getPassword());
+        loginDTO.setToken(token);
         return loginDTO;
+    }
+
+    private String securePass(String password){
+        return SecureUtil.md5(password+PASS_SALT);
     }
 }
