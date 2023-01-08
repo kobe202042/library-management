@@ -29,6 +29,29 @@ public class BookController {
 
     private static final String BASE_FILE_PATH = System.getProperty("user.dir") + "/files/";
 
+    @PostMapping("/file/upload")
+    public Result uploadFile(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (StrUtil.isBlank(originalFilename)) {
+            return Result.error("文件上传失败");
+        }
+        long flag = System.currentTimeMillis();
+        String filePath = BASE_FILE_PATH + flag + "_" + originalFilename;
+        try {
+            FileUtil.mkParentDirs(filePath);  // 创建父级目录
+            file.transferTo(FileUtil.file(filePath));
+            Admin currentAdmin = TokenUtils.getCurrentAdmin();
+            String token = TokenUtils.genToken(currentAdmin.getId().toString(), currentAdmin.getPassword(), 15);
+            String url = "http://localhost:9090/api/book/file/download/" + flag + "?&token=" + token;
+            if (originalFilename.endsWith("png") || originalFilename.endsWith("jpg") || originalFilename.endsWith("pdf")) {
+                url += "&play=1";
+            }
+            return Result.success(url);
+        } catch (Exception e) {
+            log.info("文件上传失败", e);
+        }
+        return Result.error("文件上传失败");
+    }
 
     @GetMapping("/file/download/{flag}")
     public void download(@PathVariable String flag, @RequestParam(required = false) String play, HttpServletResponse response) {

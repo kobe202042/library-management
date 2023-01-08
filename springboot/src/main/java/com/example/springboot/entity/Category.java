@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class Category {
-    private String id;
+    private Integer id;
     private String name;
     private String remark;
     private Integer pid;
