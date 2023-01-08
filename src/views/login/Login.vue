@@ -1,5 +1,17 @@
 <template>
-<div style="height: 100vh;overflow: hidden">
+<div style="height: 100vh;overflow: hidden;position: relative">
+
+  <el-card class="cover"  v-if="loginAdmin.id">
+  <slide-verify :l="42"
+                :r="10"
+                :w="310"
+                :h="155"
+                slider-text="向右滑动"
+                @success="onSuccess"
+                @fail="onFail"
+                @refresh="onRefresh"
+  ></slide-verify>
+  </el-card>
   <div style="width: 500px;height: 400px;background-color: white;border-radius: 10px;
 margin:150px auto;padding: 50px">
     <div style="margin:30px;text-align: center;font-size: 30px;font-weight: bold;color: dodgerblue">登录</div>
@@ -26,6 +38,7 @@ export default {
   name: "LOGIN",
   data(){
     return{
+      loginAdmin:{},
       admin:{},
       rules:{
         username:[
@@ -44,11 +57,8 @@ export default {
         if(valid){
           request.post('/admin/login',this.admin).then(res=>{
             if(res.code ==='200'){
-              this.$notify.success("登陆成功!")
-              if(res.data!==null){
-                Cookies.set('admin',JSON.stringify(res.data))
-              }
-              this.$router.push('/')
+              this.loginAdmin=res.data//滑块组件出现
+
             }else {
               this.$notify.error(res.msg)
             }
@@ -56,6 +66,18 @@ export default {
         }
       })
 
+    },
+    onSuccess() {
+
+      Cookies.set('admin',JSON.stringify(this.loginAdmin))
+      this.$notify.success("登陆成功!")
+      this.$router.push('/')
+    },
+    onFail() {
+      console.log("fail")
+    },
+    onRefresh() {
+      console.log("refresh")
     }
 
   }
@@ -63,5 +85,13 @@ export default {
 </script>
 
 <style scoped>
-
+.cover {
+  width: fit-content;
+  background-color: white;
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
 </style>

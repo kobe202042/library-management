@@ -59,6 +59,38 @@ const routes = [
         name:'EditAdmin',
         component: ()=>import('@/views/admin/Edit.vue')
       },
+        //-----category-----
+      {
+        path:'categoryList',
+        name:'CategoryList',
+        component: ()=>import('@/views/category/list.vue')
+      },
+      {
+        path:'addCategory',
+        name:'AddCategory',
+        component: ()=>import('@/views/category/add.vue')
+      },
+      {
+        path:'editCategory',
+        name:'EditCategory',
+        component: ()=>import('@/views/category/Edit.vue')
+      },
+      //-----book-----
+      {
+        path:'bookList',
+        name:'BookList',
+        component: ()=>import('@/views/book/List')
+      },
+      {
+        path:'addBook',
+        name:'AddBook',
+        component: ()=>import('@/views/book/Add')
+      },
+      {
+        path:'editBook',
+        name:'EditBook',
+        component: ()=>import('@/views/book/Edit')
+      },
     ]
   },
   {
@@ -76,7 +108,8 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') next()
   const admin = Cookies.get("admin")
-  if (!admin && to.path !== '/login') return next("/login")
+  if (!admin && to.path !== '/login') return next("/login")  // 强制退回到登录页面
+  // 访问 /home 的时候，并且cookie里面存在数据，这个时候我就直接放行
   next()
 })
 export default router

@@ -27,7 +27,7 @@ public class UserService implements IUserService {
 
     @Override
     public PageInfo<User> page(BaseRequest baseRequest) {
-        PageHelper.startPage(baseRequest.getPageNumber(),baseRequest.getPageSize());
+        PageHelper.startPage(baseRequest.getPageNum(),baseRequest.getPageSize());
       List<User> users=userMapper.listByCondition(baseRequest);
      return new PageInfo<>(users);
     }

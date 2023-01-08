@@ -16,7 +16,7 @@
     <el-form-item label="联系方式" prop="phone">
       <el-input v-model="form.phone" placeholder="请输入联系方式" />
     </el-form-item>
-    <el-form-item label="地址">
+    <el-form-item label="地址" prop="address">
       <el-input v-model="form.address" placeholder="请输入地址" />
     </el-form-item>
   </el-form>
@@ -77,11 +77,12 @@ export default {
       this.$refs['ruleForm'].validate((valid)=>{
         if(valid){
           request.post('/user/save',this.form).then(res=>{
-            if(res.code=='200'){
+            if(res.code==='200'){
               this.$notify.success('新增成功')
+              this.$refs['ruleForm'].resetFields()
               this.form={sex:'男'}
             }else{
-              this.$notify.success(res.msg)
+              this.$notify.error(res.msg)
 
             }
       })

@@ -3,7 +3,9 @@ package com.example.springboot.controller;
 
 import com.example.springboot.common.Result;
 import com.example.springboot.controller.dto.LoginDTO;
+import com.example.springboot.controller.request.AdminPageRequest;
 import com.example.springboot.controller.request.LoginRequest;
+import com.example.springboot.controller.request.PasswordRequest;
 import com.example.springboot.controller.request.UserPageRequest;
 import com.example.springboot.entity.Admin;
 import com.example.springboot.service.IAdminService;
@@ -25,6 +27,11 @@ public class AdminController {
     public Result login(@RequestBody LoginRequest request){
         LoginDTO login=adminService.login(request);
         return Result.success(login);
+    }
+    @PutMapping("/password")
+    public Result password(@RequestBody PasswordRequest request){
+        adminService.changePass(request);
+        return Result.success();
     }
     @PostMapping("/save")
     public Result save(@RequestBody Admin obj){
@@ -59,7 +66,7 @@ public class AdminController {
     }
 
     @GetMapping("/page")
-    public Result page(adminPageRequest pageRequest){
+    public Result page(AdminPageRequest pageRequest){
         return Result.success(adminService.page(pageRequest));
     }
 }
