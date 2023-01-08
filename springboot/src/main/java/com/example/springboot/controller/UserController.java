@@ -19,6 +19,13 @@ public class UserController {
     IUserService userService;
 
 
+    @PostMapping("/account")
+    public Result account(@RequestBody User user){
+
+        userService.handleAccount(user);
+        return Result.success();
+    }
+
     @PostMapping("/save")
     public Result save(@RequestBody User user){
 

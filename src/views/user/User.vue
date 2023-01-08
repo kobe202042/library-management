@@ -18,8 +18,6 @@
       <el-table-column prop="sex" label="性别"></el-table-column>
       <el-table-column prop="account" label="账户积分"></el-table-column>
       <el-table-column label="状态" width="230">
-
-        <!-- scope,row为当前行数距-->
         <template v-slot="scope">
           <el-switch
               v-model="scope.row.status"
@@ -36,7 +34,7 @@
         <template v-slot="scope">
 <!--          scope.row 就是当前行数据-->
           <el-button type="warning" @click="handleAccountAdd(scope.row)">充值</el-button>
-          <el-button type="primary" @click="$router.push('/editUser?id='+scope.row.id)">编辑</el-button>
+          <el-button type="primary" @click="$router.push('/editUser?id=' + scope.row.id)">编辑</el-button>
           <el-popconfirm
               style="margin-left: 5px"
               title="您确定删除这行数据吗？"
@@ -117,7 +115,7 @@ export default {
     changeStatus(row) {
       request.put('/user/update', row).then(res => {
         if (res.code === '200') {
-          this.$notify.success('操作成功!')
+          this.$notify.success('操作成功')
           this.load()
         } else {
           this.$notify.error(res.msg)
@@ -156,7 +154,7 @@ export default {
     del(id) {
       request.delete("/user/delete/" + id).then(res => {
         if (res.code === '200') {
-          this.$notify.success('删除成功!')
+          this.$notify.success('删除成功')
           this.load()
         } else {
           this.$notify.error(res.msg)
